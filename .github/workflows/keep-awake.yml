@@ -1,0 +1,26 @@
+# Visits the ShopEase dashboard every 8 hours so Streamlit Cloud never puts it to sleep
+name: Keep dashboard awake
+
+on:
+  schedule:
+    - cron: "0 */8 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  wake:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install Selenium
+        run: pip install selenium
+      - name: Visit the dashboard
+        env:
+          STREAMLIT_URL: "https://011-023-048.streamlit.app/"
+        run: python .github/scripts/wake_streamlit.py
